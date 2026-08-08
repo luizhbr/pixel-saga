@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0510">
+<title>Pixel Saga: Trio da Tempestade</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0a0510;
+  color: #c0c0e0;
+  font-family: 'Courier New', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.container {
+  text-align: center;
+  max-width: 400px;
+  padding: 20px;
+}
+h1 {
+  font-size: 2em;
+  color: #ffd93c;
+  text-shadow: 0 0 10px rgba(255, 217, 60, 0.5);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+h2 {
+  font-size: 1em;
+  color: #7b6da8;
+  margin-bottom: 20px;
+}
+.neon-line {
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #33ccff, transparent);
+  margin: 0 auto 20px;
+}
+.message {
+  font-size: 0.9em;
+  color: #8080a0;
+  line-height: 1.6;
+}
+.charts {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+}
+.char {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6em;
+  border: 2px solid;
+}
+.char:nth-child(1) { border-color: #ffd93c; background: rgba(255,217,60,0.1); color: #ffd93c; }
+.char:nth-child(2) { border-color: #f0f0fa; background: rgba(240,240,250,0.1); color: #f0f0fa; }
+.char:nth-child(3) { border-color: #f09628; background: rgba(240,150,40,0.1); color: #f09628; }
+.repo {
+  margin-top: 20px;
+  font-size: 0.8em;
+}
+.repo a {
+  color: #33ccff;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+.pending {
+  display: inline-block;
+  animation: pulse 2s ease-in-out infinite;
+  color: #ffd93c;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>PIXEL SAGA</h1>
+  <h2>Trio da Tempestade</h2>
+  <div class="neon-line"></div>
+  <div class="charts">
+    <div class="char">Mossy</div>
+    <div class="char">Polo</div>
+    <div class="char">Garrax</div>
+  </div>
+  <p class="message">
+    <span class="pending">⚠ Aguardando export HTML5 do Godot</span><br><br>
+    Para publicar o jogo jogável:<br>
+    1. Abrir o projeto no Godot 4.3+<br>
+    2. Project → Export → HTML5<br>
+    3. Salvar em <code>export/html5/</code><br>
+    4. Fazer push para o GitHub<br>
+    5. Vercel atualiza automaticamente
+  </p>
+  <div class="repo">
+    <a href="https://github.com/luizhbr/pixel-saga">github.com/luizhbr/pixel-saga</a>
+  </div>
+</div>
+</body>
+</html>
