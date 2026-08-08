@@ -1,0 +1,64 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; you can also write spaces around the "=" sign
+
+config_version=5
+
+[application]
+
+config/name="Pixel Saga: Trio da Tempestade"
+config/description="Plataforma 2D pixel art — cyberpunk + vila japonesa + fantasia"
+run/main_scene="res://scenes/MainMenu.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://assets/characters/amarelo_idle.png"
+
+[autoload]
+
+GameManager="*res://scripts/autoload/GameManager.gd"
+AudioManager="*res://scripts/autoload/AudioManager.gd"
+
+[display]
+
+window/size/viewport_width=320
+window/size/viewport_height=180
+window/size/window_width_override=960
+window/size/window_height_override=540
+window/stretch/mode="viewport"
+window/stretch/aspect="keep"
+
+[input]
+
+move_left={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194319,"physical_keycode":0,"key_label":0,"unicode":97,"echo":false), Object(InputEventKey,"keycode":65,"physical_keycode":0,"key_label":0,"unicode":97,"echo":false)]
+}
+move_right={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194321,"physical_keycode":0,"key_label":0,"unicode":100,"echo":false), Object(InputEventKey,"keycode":68,"physical_keycode":0,"key_label":0,"unicode":100,"echo":false)]
+}
+jump={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":32,"physical_keycode":0,"key_label":0,"unicode":32,"echo":false), Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false)]
+}
+switch_character={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194306,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false), Object(InputEventKey,"keycode":81,"physical_keycode":0,"key_label":0,"unicode":113,"echo":false)]
+}
+ability={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false), Object(InputEventKey,"keycode":69,"physical_keycode":0,"key_label":0,"unicode":101,"echo":false)]
+}
+dash={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false), Object(InputEventKey,"keycode":4194324,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false)]
+}
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
