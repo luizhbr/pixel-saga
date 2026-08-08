@@ -32,6 +32,14 @@ window/stretch/aspect="keep"
 
 [input]
 
+move_up={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194320,"physical_keycode":0,"key_label":0,"unicode":119,"echo":false), Object(InputEventKey,"keycode":87,"physical_keycode":0,"key_label":0,"unicode":119,"echo":false)]
+}
+move_down={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":4194322,"physical_keycode":0,"key_label":0,"unicode":115,"echo":false), Object(InputEventKey,"keycode":83,"physical_keycode":0,"key_label":0,"unicode":115,"echo":false)]
+}
 move_left={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"keycode":4194319,"physical_keycode":0,"key_label":0,"unicode":97,"echo":false), Object(InputEventKey,"keycode":65,"physical_keycode":0,"key_label":0,"unicode":97,"echo":false)]
@@ -42,7 +50,7 @@ move_right={
 }
 jump={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"keycode":32,"physical_keycode":0,"key_label":0,"unicode":32,"echo":false), Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false)]
+"events": [Object(InputEventKey,"keycode":32,"physical_keycode":0,"key_label":0,"unicode":32,"echo":false), Object(InputEventKey,"keycode":75,"physical_keycode":0,"key_label":0,"unicode":107,"echo":false)]
 }
 switch_character={
 "deadzone": 0.5,
@@ -50,11 +58,15 @@ switch_character={
 }
 ability={
 "deadzone": 0.5,
-"events": [Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false), Object(InputEventKey,"keycode":69,"physical_keycode":0,"key_label":0,"unicode":101,"echo":false)]
+"events": [Object(InputEventKey,"keycode":74,"physical_keycode":0,"key_label":0,"unicode":106,"echo":false), Object(InputEventKey,"keycode":69,"physical_keycode":0,"key_label":0,"unicode":101,"echo":false)]
 }
 dash={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"keycode":4194325,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false), Object(InputEventKey,"keycode":4194324,"physical_keycode":0,"key_label":0,"unicode":0,"echo":false)]
+}
+soul_link={
+"deadzone": 0.5,
+"events": [Object(InputEventKey,"keycode":70,"physical_keycode":0,"key_label":0,"unicode":102,"echo":false)]
 }
 
 [rendering]
