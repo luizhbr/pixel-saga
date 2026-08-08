@@ -48,7 +48,7 @@ func _make_slime_texture() -> ImageTexture:
 			img.set_pixel(x, y, purple)
 	# Top dome
 	for y in range(3, 6):
-		w := 2 + (y - 3)
+		var w := 2 + (y - 3)
 		for x in range(5, 11):
 			img.set_pixel(x, y, purple)
 	# Shadow
