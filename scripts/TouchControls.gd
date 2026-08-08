@@ -1,6 +1,6 @@
 extends CanvasLayer
-## TouchControls — botões virtuais para mobile (com mecânicas Ori)
-## Alimenta o InputMap do Godot
+## TouchControls v2 — botões virtuais elegantes para mobile
+## Estilo: circular, semi-transparente, discreto, não atrapalha o jogo
 
 var is_touch_device: bool = false
 
@@ -16,10 +16,16 @@ var soul_link_pressed: bool = false
 
 var buttons: Dictionary = {}
 
-const BTN_ALPHA: float = 0.35
-const BTN_ALPHA_PRESSED: float = 0.6
 const SCREEN_W: float = 320.0
 const SCREEN_H: float = 180.0
+
+# Cores por tipo de botão
+const COL_MOVE := Color(0.5, 0.5, 0.65, 1.0)
+const COL_JUMP := Color(0.25, 0.65, 1.0, 1.0)
+const COL_ABILITY := Color(0.7, 0.35, 1.0, 1.0)
+const COL_DASH := Color(1.0, 0.6, 0.25, 1.0)
+const COL_SWITCH := Color(0.55, 0.55, 0.75, 1.0)
+const COL_SOUL := Color(0.25, 0.9, 0.55, 1.0)
 
 func _ready() -> void:
 	layer = 20
@@ -35,28 +41,35 @@ func _check_mobile_browser() -> bool:
 	return screen_size.x <= 900 or screen_size.y <= 900
 
 func _create_buttons() -> void:
-	# Left side: D-pad
-	buttons["left"] = _make_button("◀", Vector2(8, SCREEN_H - 50), 32)
-	buttons["right"] = _make_button("▶", Vector2(44, SCREEN_H - 50), 32)
-	buttons["up"] = _make_button("▲", Vector2(26, SCREEN_H - 82), 28, Color(0.3, 0.8, 0.3))
-	buttons["down"] = _make_button("▼", Vector2(26, SCREEN_H - 18), 28, Color(0.3, 0.8, 0.3))
+	# === LEFT SIDE: D-pad (compacto, diagonal) ===
+	buttons["left"]  = _make_btn("◀", Vector2(6, SCREEN_H - 36), 22, COL_MOVE)
+	buttons["right"] = _make_btn("▶", Vector2(32, SCREEN_H - 36), 22, COL_MOVE)
+	buttons["up"]    = _make_btn("▲", Vector2(19, SCREEN_H - 54), 18, COL_MOVE)
+	buttons["down"]  = _make_btn("▼", Vector2(19, SCREEN_H - 18), 18, COL_MOVE)
 	
-	# Right side: Actions
-	buttons["jump"] = _make_button("J", Vector2(SCREEN_W - 42, SCREEN_H - 50), 36, Color(0.2, 0.6, 1.0))
-	buttons["ability"] = _make_button("✦", Vector2(SCREEN_W - 42, SCREEN_H - 90), 28, Color(0.8, 0.3, 1.0))
-	buttons["dash"] = _make_button(">>", Vector2(SCREEN_W - 78, SCREEN_H - 70), 28, Color(1.0, 0.6, 0.2))
-	buttons["switch"] = _make_button("⟳", Vector2(SCREEN_W - 78, SCREEN_H - 40), 24, Color(0.6, 0.6, 0.8))
-	buttons["soul_link"] = _make_button("S", Vector2(SCREEN_W - 110, SCREEN_H - 55), 24, Color(0.2, 0.9, 0.5))
+	# === RIGHT SIDE: Actions (empilhados, compactos) ===
+	# Jump (maior — principal)
+	buttons["jump"] = _make_btn("⬆", Vector2(SCREEN_W - 32, SCREEN_H - 40), 26, COL_JUMP)
+	# Ability (menor — acima do jump)
+	buttons["ability"] = _make_btn("✦", Vector2(SCREEN_W - 32, SCREEN_H - 72), 20, COL_ABILITY)
+	# Dash (esquerda do jump)
+	buttons["dash"] = _make_btn("≫", Vector2(SCREEN_W - 58, SCREEN_H - 46), 20, COL_DASH)
+	# Switch (menor — canto)
+	buttons["switch"] = _make_btn("⟳", Vector2(SCREEN_W - 58, SCREEN_H - 22), 16, COL_SWITCH)
+	# Soul Link (menor — isolado)
+	buttons["soul_link"] = _make_btn("✚", Vector2(SCREEN_W - 84, SCREEN_H - 34), 16, COL_SOUL)
 
-func _make_button(label: String, pos: Vector2, size: float, accent: Color = Color(0.4, 0.4, 0.5, 1.0)) -> Button:
+func _make_btn(label: String, pos: Vector2, size: float, accent: Color) -> Button:
 	var btn := Button.new()
 	btn.text = label
 	btn.position = pos
 	btn.size = Vector2(size, size)
-	btn.add_theme_font_size_override("font_size", max(4, int(size * 0.3)))
+	btn.add_theme_font_size_override("font_size", max(5, int(size * 0.35)))
+	btn.focus_mode = Control.FOCUS_NONE
 	
+	# Estilo normal: quase invisível, só borda
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.1, 0.1, 0.15, BTN_ALPHA)
+	sb.bg_color = Color(0.05, 0.05, 0.08, 0.15)
 	sb.border_color = accent
 	sb.border_width_left = 1
 	sb.border_width_right = 1
@@ -66,14 +79,36 @@ func _make_button(label: String, pos: Vector2, size: float, accent: Color = Colo
 	sb.corner_radius_top_right = int(size / 2)
 	sb.corner_radius_bottom_left = int(size / 2)
 	sb.corner_radius_bottom_right = int(size / 2)
+	sb.content_margin_left = 0
+	sb.content_margin_right = 0
+	sb.content_margin_top = 0
+	sb.content_margin_bottom = 0
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_stylebox_override("hover", sb)
-	var sbp := sb.duplicate()
-	sbp.bg_color = accent.darkened(0.3)
-	sbp.bg_color.a = BTN_ALPHA_PRESSED
+	
+	# Estilo pressionado: brilha com a cor do botão
+	var sbp := StyleBoxFlat.new()
+	sbp.bg_color = Color(accent.r, accent.g, accent.b, 0.35)
+	sbp.border_color = accent.lightened(0.3)
+	sbp.border_width_left = 1
+	sbp.border_width_right = 1
+	sbp.border_width_top = 1
+	sbp.border_width_bottom = 1
+	sbp.corner_radius_top_left = int(size / 2)
+	sbp.corner_radius_top_right = int(size / 2)
+	sbp.corner_radius_bottom_left = int(size / 2)
+	sbp.corner_radius_bottom_right = int(size / 2)
+	sbp.content_margin_left = 0
+	sbp.content_margin_right = 0
+	sbp.content_margin_top = 0
+	sbp.content_margin_bottom = 0
 	btn.add_theme_stylebox_override("pressed", sbp)
-	btn.add_theme_color_override("font_color", accent.lightened(0.3))
+	
+	# Cor do texto discreta, brilha ao pressionar
+	btn.add_theme_color_override("font_color", Color(accent.r, accent.g, accent.b, 0.5))
 	btn.add_theme_color_override("font_pressed_color", Color.WHITE)
+	btn.add_theme_color_override("font_hover_color", Color(accent.r, accent.g, accent.b, 0.8))
+	
 	add_child(btn)
 	btn.button_down.connect(func(): _on_btn_down(label))
 	btn.button_up.connect(func(): _on_btn_up(label))
@@ -85,11 +120,11 @@ func _on_btn_down(label: String) -> void:
 		"▶": right_pressed = true
 		"▲": up_pressed = true
 		"▼": down_pressed = true
-		"J": jump_pressed = true
+		"⬆": jump_pressed = true
 		"⟳": switch_pressed = true
 		"✦": ability_pressed = true
-		">>": dash_pressed = true
-		"S": soul_link_pressed = true
+		"≫": dash_pressed = true
+		"✚": soul_link_pressed = true
 
 func _on_btn_up(label: String) -> void:
 	match label:
@@ -97,26 +132,26 @@ func _on_btn_up(label: String) -> void:
 		"▶": right_pressed = false
 		"▲": up_pressed = false
 		"▼": down_pressed = false
-		"J": jump_pressed = false
+		"⬆": jump_pressed = false
 		"⟳": switch_pressed = false
 		"✦": ability_pressed = false
-		">>": dash_pressed = false
-		"S": soul_link_pressed = false
+		"≫": dash_pressed = false
+		"✚": soul_link_pressed = false
 
 func _process(_delta: float) -> void:
 	if not is_touch_device:
 		return
-	_feed_action("move_left", left_pressed)
-	_feed_action("move_right", right_pressed)
-	_feed_action("move_up", up_pressed)
-	_feed_action("move_down", down_pressed)
-	_feed_action("jump", jump_pressed)
-	_feed_action("switch_character", switch_pressed)
-	_feed_action("ability", ability_pressed)
-	_feed_action("dash", dash_pressed)
-	_feed_action("soul_link", soul_link_pressed)
+	_feed("move_left", left_pressed)
+	_feed("move_right", right_pressed)
+	_feed("move_up", up_pressed)
+	_feed("move_down", down_pressed)
+	_feed("jump", jump_pressed)
+	_feed("switch_character", switch_pressed)
+	_feed("ability", ability_pressed)
+	_feed("dash", dash_pressed)
+	_feed("soul_link", soul_link_pressed)
 
-func _feed_action(action: String, pressed: bool) -> void:
+func _feed(action: String, pressed: bool) -> void:
 	if pressed:
 		Input.action_press(action)
 	else:
