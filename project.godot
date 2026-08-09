@@ -21,6 +21,8 @@ config/icon="res://assets/characters/amarelo_idle.png"
 GameManager="*res://scripts/autoload/GameManager.gd"
 AudioManager="*res://scripts/autoload/AudioManager.gd"
 SceneTransition="*res://scripts/autoload/SceneTransition.gd"
+Vignette="*res://scripts/autoload/Vignette.gd"
+SaveSystem="*res://scripts/autoload/SaveSystem.gd"
 
 [display]
 

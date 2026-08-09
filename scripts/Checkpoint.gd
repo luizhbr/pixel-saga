@@ -33,3 +33,4 @@ func _on_body_entered(body: Node2D) -> void:
 		GameManager.set_meta("current_checkpoint", checkpoint_id)
 		GameManager.set_meta("checkpoint_pos", global_position)
 		AudioManager.play("checkpoint")
+		SaveSystem.save_game()

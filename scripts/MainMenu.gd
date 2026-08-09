@@ -93,9 +93,12 @@ func _show_main_menu() -> void:
 	state = MenuState.MAIN
 	_clear_content()
 	
-	var items := ["JOGAR", "SELECIONAR PERSONAGEM", "CONFIGURAÇÕES", "COMO JOGAR", "CRÉDITOS"]
+	var has_save := SaveSystem.has_save()
+	var items := ["JOGAR", "SELECIONAR PERSONAGEM", "CONFIGURAÇÕES", "COMO JOGAR", "CRÉDITOS", "SAIR"]
+	if has_save:
+		items.insert(0, "CONTINUAR")
 	for i in range(items.size()):
-		var btn := _make_menu_button(items[i], Vector2(60, 5 + i * 16))
+		var btn := _make_menu_button(items[i], Vector2(60, 5 + i * 14))
 		buttons.append({"label": items[i], "btn": btn, "index": i})
 	
 	selected = 0
@@ -351,11 +354,38 @@ func _activate() -> void:
 	match state:
 		MenuState.MAIN:
 			match selected:
-				0: _start_game()
-				1: _show_select_screen()
-				2: _show_settings_screen()
-				3: _show_howto_screen()
-				4: _show_credits_screen()
+				0:  # CONTINUAR (if save) or JOGAR
+					if SaveSystem.has_save():
+						_continue_game()
+					else:
+						_start_game()
+				1:  # JOGAR (if save) or SELECIONAR
+					if SaveSystem.has_save():
+						_start_game()
+					else:
+						_show_select_screen()
+				2:  # SELECIONAR (if save) or CONFIGURAÇÕES
+					if SaveSystem.has_save():
+						_show_select_screen()
+					else:
+						_show_settings_screen()
+				3:  # CONFIGURAÇÕES (if save) or COMO JOGAR
+					if SaveSystem.has_save():
+						_show_settings_screen()
+					else:
+						_show_howto_screen()
+				4:  # COMO JOGAR (if save) or CRÉDITOS
+					if SaveSystem.has_save():
+						_show_howto_screen()
+					else:
+						_show_credits_screen()
+				5:  # CRÉDITOS (if save) or SAIR
+					if SaveSystem.has_save():
+						_show_credits_screen()
+					else:
+						get_tree().quit()
+				6:  # SAIR (only if save)
+					get_tree().quit()
 		MenuState.SELECT:
 			match selected:
 				0: char_index_selected = (char_index_selected - 1 + 3) % 3; _show_select_screen()
@@ -390,6 +420,22 @@ func _start_game() -> void:
 	GameManager.current_character = char_index_selected
 	AudioManager.stop_music()
 	SceneTransition.transition_to_scene("res://scenes/Level1.tscn", "Beco Cyberpunk")
+
+func _continue_game() -> void:
+	var data := SaveSystem.load_game()
+	GameManager.current_level = data.get("current_level", 0)
+	GameManager.crystals = data.get("crystals", 0)
+	GameManager.current_character = data.get("current_character", 0)
+	char_index_selected = GameManager.current_character
+	AudioManager.stop_music()
+	var levels := [
+		"res://scenes/Level1.tscn",
+		"res://scenes/Level2.tscn",
+		"res://scenes/Level3.tscn",
+	]
+	var level_names := ["Beco Cyberpunk", "Vila Japonesa", "Pântano do Rosto Gigante"]
+	var idx: int = clamp(GameManager.current_level, 0, levels.size() - 1)
+	SceneTransition.transition_to_scene(levels[idx], level_names[idx])
 
 # === SETTINGS PERSISTENCE ===
 

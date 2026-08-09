@@ -333,6 +333,7 @@ func _on_player_died() -> void:
 	var pause_menu := get_node_or_null("PauseMenu")
 	if pause_menu and pause_menu.has_method("show_game_over"):
 		pause_menu.show_game_over()
+	Vignette.death_flash()
 	screen_shake(10.0, 0.5)
 	AudioManager.play("hit")
 

@@ -65,9 +65,9 @@ func fade_in(duration: float = 0.4, text: String = "") -> void:
 	transition_finished.emit()
 
 func transition_to_scene(scene_path: String, text: String = "", fade_out_time: float = 0.4, fade_in_time: float = 0.4) -> void:
+	Vignette.transition_pulse()
 	await fade_out(fade_out_time, text)
 	get_tree().change_scene_to_file(scene_path)
-	# Fade in happens in the new scene's _ready via call_deferred
 	await get_tree().create_timer(0.1).timeout
 	await fade_in(fade_in_time)
 

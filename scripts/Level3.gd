@@ -1,12 +1,34 @@
 extends "res://scripts/LevelBase.gd"
 ## Level 3 — Pântano do Rosto Gigante
-## Inimigos: ambusher, tank, shield, chaser (dificuldade alta)
+## Inimigos: ambusher, tank, shield, chaser (dificuldade alta) + BOSS
 
 func _ready() -> void:
 	bg_far = "res://assets/backgrounds/bg_swamp_far.png"
 	bg_mid = "res://assets/backgrounds/bg_swamp_mid.png"
 	bg_near = "res://assets/backgrounds/bg_swamp_near.png"
 	super._ready()
+	_spawn_boss()
+
+func _spawn_boss() -> void:
+	var boss := CharacterBody2D.new()
+	boss.set_script(load("res://scripts/Boss.gd"))
+	boss.global_position = Vector2(320, 120)
+	boss.collision_layer = 2
+	boss.collision_mask = 1
+	add_child(boss)
+	# Boss music
+	AudioManager.start_music("boss")
+	# Vignette boss mode
+	Vignette.boss_mode(true)
+	# Save game when boss appears
+	SaveSystem.save_game()
+	# When boss is defeated, open exit
+	boss.boss_defeated.connect(func():
+		Vignette.boss_mode(false)
+		AudioManager.start_music("swamp")
+		# Open portal / show victory
+		_next_level()
+	)
 
 func get_enemy_positions() -> Array:
 	return [
