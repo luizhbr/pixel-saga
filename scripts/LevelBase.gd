@@ -175,6 +175,9 @@ func _create_player() -> void:
 	player.add_child(col)
 	add_child(player)
 	
+	# Set level reference so Player can call level methods
+	player.set("level", self)
+	
 	# Camera com screen shake
 	camera = Camera2D.new()
 	camera.set_script(load("res://scripts/SmoothCamera.gd"))
@@ -191,20 +194,21 @@ func _create_hud() -> void:
 	add_child(touch)
 
 func _create_danger_zone() -> void:
+	# Danger zone — large area below the level
 	var danger_zone := Area2D.new()
 	danger_zone.name = "DangerZone"
 	var dcol := CollisionShape2D.new()
 	var drect := RectangleShape2D.new()
-	drect.size = Vector2(2000, 40)
+	drect.size = Vector2(2000, 60)
 	dcol.shape = drect
 	danger_zone.add_child(dcol)
-	danger_zone.position = Vector2(500, 300)
+	danger_zone.position = Vector2(500, 350)
 	danger_zone.collision_mask = 4
 	add_child(danger_zone)
 	danger_zone.body_entered.connect(func(body):
 		if body.is_in_group("player"):
 			body.take_damage()
-			body.global_position = get_respawn_position()
+			body._respawn()
 			screen_shake(8.0, 0.3)
 	)
 	
@@ -297,9 +301,17 @@ func play_sfx(name: String) -> void:
 	AudioManager.play(name)
 
 func _on_player_died() -> void:
+	# Robust respawn: restore position + all player states
 	player.global_position = get_respawn_position()
+	player.velocity = Vector2.ZERO
 	GameManager.heal(GameManager.MAX_HEALTH)
+	GameManager.spirit_energy = 5.0
+	GameManager.energy_changed.emit(GameManager.spirit_energy, GameManager.MAX_SPIRIT_ENERGY)
+	# Reset player timers/flags via method
+	if player.has_method("_respawn"):
+		player._respawn()
 	screen_shake(10.0, 0.5)
+	AudioManager.play("hit")
 
 func get_respawn_position() -> Vector2:
 	var cp_pos: Variant = GameManager.get_meta("checkpoint_pos", get_player_start())
