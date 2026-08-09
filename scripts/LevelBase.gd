@@ -132,11 +132,15 @@ func _create_platforms() -> void:
 		tile_layer.add_child(body)
 
 func _create_enemies() -> void:
-	for pos in get_enemy_positions():
+	for enemy_data in get_enemy_positions():
 		var enemy := CharacterBody2D.new()
-		enemy.set_script(load("res://scripts/Enemy.gd"))
-		enemy.global_position = Vector2(pos[0], pos[1])
-		enemy.add_to_group("enemy")
+		enemy.set_script(load("res://scripts/EnemyBase.gd"))
+		enemy.global_position = Vector2(enemy_data[0], enemy_data[1])
+		# Set type if provided
+		if enemy_data.size() > 2:
+			enemy.set("type", enemy_data[2])
+		if enemy_data.size() > 3:
+			enemy.set("patrol_distance", enemy_data[3])
 		enemy.collision_layer = 2
 		enemy.collision_mask = 1
 		add_child(enemy)
@@ -343,9 +347,14 @@ func _next_level() -> void:
 		"res://scenes/Level2.tscn",
 		"res://scenes/Level3.tscn",
 	]
+	var level_names := [
+		"Beco Cyberpunk",
+		"Vila Japonesa",
+		"Pântano do Rosto Gigante",
+	]
 	if GameManager.current_level < levels.size():
-		get_tree().change_scene_to_file(levels[GameManager.current_level])
+		var text: String = level_names[GameManager.current_level] if GameManager.current_level < level_names.size() else ""
+		SceneTransition.transition_to_scene(levels[GameManager.current_level], text)
 	else:
-		# Game complete — back to menu
 		GameManager.reset()
-		get_tree().change_scene_to_file("res://scenes/MainMenu.tscn")
+		SceneTransition.transition_to_scene("res://scenes/MainMenu.tscn", "FIM")

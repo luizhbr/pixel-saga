@@ -385,7 +385,7 @@ func _toggle_setting(idx: int) -> void:
 func _start_game() -> void:
 	GameManager.reset()
 	GameManager.current_character = char_index_selected
-	get_tree().change_scene_to_file("res://scenes/Level1.tscn")
+	SceneTransition.transition_to_scene("res://scenes/Level1.tscn", "Beco Cyberpunk")
 
 # === SETTINGS PERSISTENCE ===
 
