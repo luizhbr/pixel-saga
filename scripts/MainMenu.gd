@@ -76,6 +76,9 @@ func _ready() -> void:
 	if DisplayServer.is_touchscreen_available() or OS.has_feature("web"):
 		_setup_touch_nav()
 	
+	# Start menu music
+	AudioManager.start_music("menu")
+	
 	_show_main_menu()
 	set_process_input(true)
 
@@ -385,6 +388,7 @@ func _toggle_setting(idx: int) -> void:
 func _start_game() -> void:
 	GameManager.reset()
 	GameManager.current_character = char_index_selected
+	AudioManager.stop_music()
 	SceneTransition.transition_to_scene("res://scenes/Level1.tscn", "Beco Cyberpunk")
 
 # === SETTINGS PERSISTENCE ===

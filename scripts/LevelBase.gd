@@ -67,6 +67,16 @@ func _ready() -> void:
 	
 	GameManager.player_died.connect(_on_player_died)
 	set_process(true)
+	
+	# Start level music
+	var music_tracks := {
+		"res://scenes/Level1.tscn": "cyberpunk",
+		"res://scenes/Level2.tscn": "japanese",
+		"res://scenes/Level3.tscn": "swamp",
+	}
+	var scene_path := scene_file_path
+	if music_tracks.has(scene_path):
+		AudioManager.start_music(music_tracks[scene_path])
 
 func _create_background() -> void:
 	var far_tex := load(bg_far)
