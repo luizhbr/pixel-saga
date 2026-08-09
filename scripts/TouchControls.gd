@@ -37,6 +37,9 @@ func _ready() -> void:
 		_create_buttons()
 
 func _check_mobile_browser() -> bool:
+	# Only show touch controls on actual touch devices, not laptops
+	if not DisplayServer.is_touchscreen_available():
+		return false
 	var screen_size := DisplayServer.screen_get_size()
 	return screen_size.x <= 900 or screen_size.y <= 900
 

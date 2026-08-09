@@ -213,7 +213,7 @@ func _create_danger_zone() -> void:
 	dcol.shape = drect
 	danger_zone.add_child(dcol)
 	danger_zone.position = Vector2(500, 350)
-	danger_zone.collision_mask = 4
+	danger_zone.collision_mask = 1  # Detect player on layer 1
 	add_child(danger_zone)
 	danger_zone.body_entered.connect(func(body):
 		if body.is_in_group("player"):
@@ -247,14 +247,19 @@ func _create_danger_zone() -> void:
 	)
 
 func _process(_delta: float) -> void:
-	# Enemy collision
-	for enemy in enemies:
+	# Enemy collision — iterate backwards to safely remove
+	var i: int = enemies.size() - 1
+	while i >= 0:
+		var enemy = enemies[i]
 		if is_instance_valid(enemy) and is_instance_valid(player):
 			var dist := player.global_position.distance_to(enemy.global_position)
 			if dist < 16.0:
 				if player.velocity.y > 0 and player.global_position.y < enemy.global_position.y - 4:
-					enemy.queue_free()
-					enemies.erase(enemy)
+					if enemy.has_method("stomp_kill"):
+						enemy.stomp_kill()
+					else:
+						enemy.queue_free()
+					enemies.remove_at(i)
 					player.velocity.y = -200.0
 					spawn_particles(player.global_position + Vector2(0, 8), Color(0.7, 0.2, 0.8), 8)
 					screen_shake(3.0, 0.15)
@@ -264,6 +269,9 @@ func _process(_delta: float) -> void:
 						screen_shake(5.0, 0.25)
 						spawn_particles(player.global_position, Color(1.0, 0.3, 0.3), 6)
 						play_sfx("hit")
+		elif not is_instance_valid(enemy):
+			enemies.remove_at(i)
+		i -= 1
 	
 	# Screen shake
 	if shake_timer > 0:

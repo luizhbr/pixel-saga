@@ -239,8 +239,7 @@ func _handle_movement(delta: float, input_x: float) -> void:
 	# Coyote time
 	if is_on_floor():
 		coyote_timer = COYOTE_TIME
-	else:
-		coyote_timer -= delta
+	# NOTE: coyote_timer is decremented in _update_timers() above — do NOT decrement here
 
 func _check_wall_slide() -> void:
 	if is_on_floor():
@@ -277,8 +276,8 @@ func _handle_jump(input_x: float) -> void:
 	if not Input.is_action_pressed("jump"):
 		jump_held = false
 	
-	# Variable jump height
-	if not jump_held and velocity.y < 0.0:
+	# Variable jump height — cut velocity ONCE when jump is released
+	if Input.is_action_just_released("jump") and velocity.y < 0.0:
 		velocity.y *= JUMP_CUT
 	
 	# Ground jump
@@ -317,9 +316,10 @@ func _check_fall_protection() -> void:
 		_respawn()
 
 func _respawn() -> void:
+	# Reset Engine.time_scale in case Bash was interrupted
+	Engine.time_scale = 1.0
 	var cp_pos: Variant = GameManager.get_meta("checkpoint_pos", null)
 	if cp_pos == null or not (cp_pos is Vector2):
-		# No checkpoint — use level start
 		if level and level.has_method("get_player_start"):
 			cp_pos = level.get_player_start()
 		else:
@@ -333,6 +333,12 @@ func _respawn() -> void:
 	can_dash = true
 	coyote_timer = 0.0
 	jump_buffer_timer = 0.0
+	wall_jump_timer = 0.0
+	invincible_timer = 0.0
+	Engine.time_scale = 1.0
+
+func _exit_tree() -> void:
+	# Safety: always reset time_scale when Player is destroyed
 	Engine.time_scale = 1.0
 
 func _start_dash() -> void:

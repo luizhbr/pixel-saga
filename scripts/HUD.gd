@@ -51,7 +51,7 @@ func _ready() -> void:
 	# Character name (bottom-left)
 	char_label = Label.new()
 	char_label.position = Vector2(8, 160)
-	char_label.text = "Mossy"
+	char_label.text = GameManager.CHAR_NAMES[GameManager.current_character]
 	char_label.add_theme_font_size_override("font_size", 6)
 	char_label.add_theme_color_override("font_color", Color(1.0, 0.9, 0.5))
 	add_child(char_label)

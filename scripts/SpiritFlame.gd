@@ -40,10 +40,10 @@ func _on_body_entered(body: Node2D) -> void:
 		queue_free()
 
 func _spawn_hit() -> void:
-	# Small spark effect
+	# Small spark effect — auto-remove after 0.2s
 	var spark := ColorRect.new()
 	spark.size = Vector2(4, 4)
 	spark.position = global_position
 	spark.color = Color(1.0, 0.9, 0.3, 0.8)
-	spark.set("lifetime", 0.2)
 	get_parent().add_child(spark)
+	get_tree().create_timer(0.2).timeout.connect(spark.queue_free)

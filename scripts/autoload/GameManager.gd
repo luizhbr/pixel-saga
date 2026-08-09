@@ -60,3 +60,7 @@ func reset() -> void:
 	crystals = 0
 	current_level = 0
 	spirit_energy = 5.0
+	# Clear checkpoint metadata
+	remove_meta("checkpoint_pos")
+	remove_meta("current_checkpoint")
+	remove_meta("soul_link_active")
