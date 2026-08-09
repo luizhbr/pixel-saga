@@ -196,6 +196,12 @@ func _create_hud() -> void:
 	var touch := CanvasLayer.new()
 	touch.set_script(load("res://scripts/TouchControls.gd"))
 	add_child(touch)
+	# Pause menu
+	var pause := CanvasLayer.new()
+	pause.set_script(load("res://scripts/PauseMenu.gd"))
+	pause.name = "PauseMenu"
+	add_child(pause)
+	add_to_group("level")
 
 func _create_danger_zone() -> void:
 	# Danger zone — large area below the level
@@ -305,15 +311,10 @@ func play_sfx(name: String) -> void:
 	AudioManager.play(name)
 
 func _on_player_died() -> void:
-	# Robust respawn: restore position + all player states
-	player.global_position = get_respawn_position()
-	player.velocity = Vector2.ZERO
-	GameManager.heal(GameManager.MAX_HEALTH)
-	GameManager.spirit_energy = 5.0
-	GameManager.energy_changed.emit(GameManager.spirit_energy, GameManager.MAX_SPIRIT_ENERGY)
-	# Reset player timers/flags via method
-	if player.has_method("_respawn"):
-		player._respawn()
+	# Show game over screen
+	var pause_menu := get_node_or_null("PauseMenu")
+	if pause_menu and pause_menu.has_method("show_game_over"):
+		pause_menu.show_game_over()
 	screen_shake(10.0, 0.5)
 	AudioManager.play("hit")
 
